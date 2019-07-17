@@ -204,17 +204,23 @@ class DLibHOGFaceDetector : public DLibHOGDetector {
   }
 
 
-  virtual inline void align(const cv::Mat& srcImg, const dlib::rectangle rect, cv::Mat& dstImg){
+  virtual inline void align(cv::Mat& srcImg, std::vector<dlib::rectangle> rect, std::vector<cv::Mat*> dstImg){
 	LOG(INFO) << "src mat size : " << srcImg.size();
+        std::vector<dlib::full_object_detection> shapes;
 	dlib::array2d<dlib::rgb_pixel> img;
-	dlib::assign_image(img, dlib::cv_image<dlib::bgr_pixel>(srcImg));
-	dlib::full_object_detection shape = msp(img, rect);
-  	std::vector<dlib::full_object_detection> shapes;
-  	shapes.push_back(shape);
-  	dlib::array<dlib::array2d<dlib::rgb_pixel> > face_chips;
-  	dlib::extract_image_chips(img, get_face_chip_details(shapes), face_chips);
-  	cv::Mat tmp_img = dlib::toMat(face_chips[0]);
-  	tmp_img.assignTo(dstImg,-1);
+        dlib::assign_image(img, dlib::cv_image<dlib::bgr_pixel>(srcImg));
+
+	for(int i=0; i< rect.size(); i++){
+        	dlib::full_object_detection shape = msp(img, rect[i]);
+        	shapes.push_back(shape);
+	}
+
+        dlib::array<dlib::array2d<dlib::rgb_pixel> > face_chips;
+        dlib::extract_image_chips(img, get_face_chip_details(shapes), face_chips);
+	for(int i=0; i<face_chips.size(); i++){
+		cv::Mat tmp_img = dlib::toMat(face_chips[i]);
+	        tmp_img.assignTo((*dstImg[i]),-1);
+	}
   }
 
   std::unordered_map<int, dlib::full_object_detection>& getFaceShapeMap() {
