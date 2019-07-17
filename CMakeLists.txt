@@ -37,6 +37,7 @@ add_library(android_dlib SHARED
             ${JNI_DETECTION_SRC}/jni_face_det.cpp
             ${JNI_DETECTION_SRC}/jni_imageutils.cpp
             ${JNI_DETECTION_SRC}/jni_pedestrian_det.cpp
+	    ${JNI_DETECTION_SRC}/jni_face_align.cpp
             ${JNI_COMMON_SRC}/jni_bitmap2mat.cpp
             ${JNI_COMMON_SRC}/jni_fileutils.cpp
             ${JNI_COMMON_SRC}/jni_utils.cpp
