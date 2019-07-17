@@ -128,6 +128,17 @@ JNIEXPORT jobjectArray JNICALL
   return getDetectResult(env, detPtr, size);
 }
 
+JNIEXPORT void JNICALL
+    DLIB_FACE_JNI_METHOD(jniAlignFace)(JNIEnv* env, jobject thiz, jint rec_x, jint rec_y, jint rec_width, jint rec_height,
+                                          jlong src, jlong dst) {
+	    cv::Mat* srcImg = (cv::Mat*)src;
+	    cv::Mat* dstImg = (cv::Mat*)dst;
+	    dlib::rectangle rect(rec_x, rec_y, rec_x + rec_width, rec_y + rec_height);
+	    DetectorPtr detPtr = getDetectorPtr(env, thiz);
+	    detPtr->align((*srcImg),rect,(*dstImg));
+	    
+}
+
 JNIEXPORT jobjectArray JNICALL
     DLIB_FACE_JNI_METHOD(jniBitmapDetect)(JNIEnv* env, jobject thiz,
                                           jobject bitmap) {

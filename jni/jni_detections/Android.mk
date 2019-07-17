@@ -15,8 +15,7 @@ LOCAL_C_INCLUDES +=  \
 LOCAL_SRC_FILES += \
            jni_imageutils.cpp \
 	       jni_pedestrian_det.cpp \
-	       jni_face_det.cpp \
-	       jni_face_align.cpp
+	       jni_face_det.cpp
 
 LOCAL_LDLIBS += -lm -llog -ldl -lz -ljnigraphics
 LOCAL_CPPFLAGS += -fexceptions -frtti -std=c++11
