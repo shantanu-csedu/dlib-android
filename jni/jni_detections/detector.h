@@ -214,7 +214,7 @@ class DLibHOGFaceDetector : public DLibHOGDetector {
         	dlib::full_object_detection shape = msp(img, rect[i]);
         	shapes.push_back(shape);
 	}
-
+	LOG(INFO) << "rectangle left " << rect[0].left() << " top " << rect[0].top() << " width " << rect[0].width() << " height " << rect[0].height();
         dlib::array<dlib::array2d<dlib::rgb_pixel> > face_chips;
         dlib::extract_image_chips(img, get_face_chip_details(shapes), face_chips);
 	for(int i=0; i<face_chips.size(); i++){

@@ -129,32 +129,37 @@ JNIEXPORT jobjectArray JNICALL
 }
 
 JNIEXPORT void JNICALL
-    DLIB_FACE_JNI_METHOD(jniAlignFace)(JNIEnv* env, jobject thiz, jintArray rec_x_array, jintArray rec_y_array, jintArray rec_width_array, jintArray rec_height_array,
-                                          jlong src, jlongArray dst_array) {
+    DLIB_FACE_JNI_METHOD(jniAlignFace)(JNIEnv* env, jobject thiz,jlong src, jlongArray dst_array , jintArray rec_x_array, jintArray rec_y_array, jintArray rec_width_array, jintArray rec_height_array) {
 
 	    cv::Mat* srcImg = (cv::Mat*)src;
 	    std::vector<cv::Mat*> dstImages;
 	    std::vector<dlib::rectangle> vecRect;
 	    int length = env->GetArrayLength(rec_x_array);
-	    jint *rec_x = env->GetIntArrayElements( rec_x_array, 0);
-	    jint *rec_y = env->GetIntArrayElements( rec_y_array, 0);
-	    jint *rec_width = env->GetIntArrayElements( rec_width_array, 0);
-	    jint *rec_height = env->GetIntArrayElements( rec_height_array, 0);
-	    jlong *dst_images = env->GetLongArrayElements(dst_array, 0);
+	    jint rec_x[length];
+            env->GetIntArrayRegion( rec_x_array, 0, length, rec_x);
+	    jint rec_y[length];
+	    env->GetIntArrayRegion( rec_y_array, 0, length, rec_y);
+	    jint rec_width[length];
+	    env->GetIntArrayRegion( rec_width_array, 0, length, rec_width);
+	    jint rec_height[length];
+	    env->GetIntArrayRegion( rec_height_array, 0, length, rec_height);
+	    jlong dst_images[length];
+	    env->GetLongArrayRegion(dst_array, 0, length, dst_images);
 	    
 	    for(int i=0;i<length;i++){
-                dlib::rectangle rect(rec_x[i], rec_y[i], rec_x[i] + rec_width[i], rec_y[i] + rec_height[i]);
+                dlib::rectangle rect(rec_x[i], rec_y[i], rec_x[i] + rec_width[i] -1, rec_y[i] + rec_height[i] - 1);
                 vecRect.push_back(rect);
 	    	dstImages.push_back((cv::Mat*)dst_images[i]);
 	    }
+            LOG(INFO) << "rectangle left " << rec_x[0] << " top " << rec_y[0] << " width " << rec_width[0] << " height " << rec_height[0];
 	    DetectorPtr detPtr = getDetectorPtr(env, thiz);
 	    detPtr->align((*srcImg),vecRect,dstImages);
 
-            env->ReleaseIntArrayElements(rec_x_array, rec_x,0);
-            env->ReleaseIntArrayElements( rec_y_array, rec_y,0);
-            env->ReleaseIntArrayElements( rec_width_array, rec_width,0);
-            env->ReleaseIntArrayElements( rec_height_array, rec_width,0);
-            env->ReleaseLongArrayElements( dst_array , dst_images ,0);
+//            env->ReleaseIntArrayElements(rec_x_array, rec_x,0);
+            //env->ReleaseIntArrayElements( rec_y_array, rec_y, 0);
+//            env->ReleaseIntArrayElements( rec_width_array, rec_width,0);
+//            env->ReleaseIntArrayElements( rec_height_array, rec_width,0);
+//            env->ReleaseLongArrayElements( dst_array , dst_images ,0);
 	    
 }
 
